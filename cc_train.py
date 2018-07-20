@@ -4,8 +4,6 @@ import pyrebase
 import sys
 import numpy as np
 
-from keras.callbacks import ModelCheckpoint, TensorBoard
-from cc_model import model
 from common import create_dir_if_not_exists, color_record_to_array, color_record_to_label_index, one_hot_encode_labels
 
 
@@ -34,6 +32,9 @@ def get_database():
 
 
 def train(run_name: str, epochs: int, validation_split: float):
+	from cc_model import create_model
+	from keras.callbacks import ModelCheckpoint, TensorBoard
+
 	db = get_database()
 	color_records = db.child('colors').get()
 
@@ -55,6 +56,8 @@ def train(run_name: str, epochs: int, validation_split: float):
 	# Callbacks
 	tensorboard = TensorBoard(log_dir=os.path.join(LOGS_PATH, run_name))
 	checkpoint = ModelCheckpoint(os.path.join(CHECKPOINT_PATH, "weights{epoch:03d}.hdf5"), monitor='val_loss', save_weights_only=True, mode='auto', period=1, verbose=1, save_best_only=True)
+
+	model = create_model()
 
 	# Compiling and running training
 	model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])

@@ -10,10 +10,12 @@ def check_input_validity(rgb_input: list) -> bool:
 
 
 def predict(weights_path: str, rgb_input: list):
-	from cc_model import model
+	from cc_model import create_model
 
 	input_np = np.divide(np.array([rgb_input]), 255)
 	print('\nRGB input: {}\n'.format(input_np))
+
+	model = create_model()
 
 	model.load_weights(weights_path)
 	output = model.predict(input_np)
